@@ -2,22 +2,18 @@ package com.ecommerce.productservice.model;
 
 import com.ecommerce.productservice.dto.ProductDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "products")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Product
+public class Product extends Base
 {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String name;
     private String description;
     private Double price;
@@ -31,8 +27,8 @@ public class Product
     public ProductDTO toDTO()
     {
         ProductDTO dto  = new ProductDTO();
-        dto.setId(this.id);
-        dto.setName(this.name);
+        dto.setId(this.getId());
+        dto.setName(this.getName());
         dto.setDescription(this.description);
         dto.setPrice(this.price);
         dto.setQuantity(this.quantity);
