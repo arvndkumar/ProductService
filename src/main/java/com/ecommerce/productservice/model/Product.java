@@ -13,7 +13,7 @@ import lombok.*;
 
 public class Product extends Base
 {
-
+    @Column(unique = true, nullable = false)
     private String name;
     private String description;
     private Double price;
