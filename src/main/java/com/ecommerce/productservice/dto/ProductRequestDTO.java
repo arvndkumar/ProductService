@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
-    private Long id;
+public class ProductRequestDTO {
+
     private String name;
     private String description;
     private double price;
@@ -19,11 +19,11 @@ public class ProductDTO {
     private Long categoryId;
     private String categoryName;
 
+
     public Product toProduct()
     {
         Product product = new Product();
 
-        product.setId(this.id);
         product.setName(this.name);
         product.setDescription(this.description);
         product.setPrice(this.price);
@@ -36,5 +36,4 @@ public class ProductDTO {
         product.setCategory(category);
         return product;
     }
-
 }

@@ -1,6 +1,7 @@
 package com.ecommerce.productservice.service;
 
-import com.ecommerce.productservice.dto.ProductDTO;
+import com.ecommerce.productservice.dto.ProductRequestDTO;
+import com.ecommerce.productservice.dto.ProductResponseDTO;
 import com.ecommerce.productservice.exception.ProductAlreadyExistsException;
 import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
@@ -33,7 +34,7 @@ class ProductServiceImplTest {
     void testCreateProduct_Success() {
         //Arrange
 
-        ProductDTO dto = new ProductDTO();
+        ProductRequestDTO dto = new ProductRequestDTO();
 
         dto.setName("iPhone 16");
         dto.setCategoryName("Phone");
@@ -63,7 +64,7 @@ class ProductServiceImplTest {
 
 
         //Act
-        ProductDTO response = productService.createProduct(dto);
+        ProductResponseDTO response = productService.createProduct(dto);
 
         //Assert
         assertEquals("iPhone 16", response.getName());
@@ -75,7 +76,7 @@ class ProductServiceImplTest {
     @Test
     void testCreateProduct_AlreadyExists() {
         //Arrange
-        ProductDTO dto = new ProductDTO();
+        ProductRequestDTO dto = new ProductRequestDTO();
         dto.setName("iPhone 16");
         dto.setCategoryName("Phone");
 

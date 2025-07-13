@@ -1,6 +1,7 @@
 package com.ecommerce.productservice.service;
 
-import com.ecommerce.productservice.dto.ProductDTO;
+import com.ecommerce.productservice.dto.ProductRequestDTO;
+import com.ecommerce.productservice.dto.ProductResponseDTO;
 import com.ecommerce.productservice.exception.ProductAlreadyExistsException;
 import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
@@ -24,21 +25,21 @@ public class ProductServiceImpl implements ProductService
     }
 
     @Override
-    public ProductDTO createProduct(ProductDTO productDTO)
+    public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO)
     {
-        Optional<Product> productOptional= productRepository.findByName(productDTO.getName());
+        Optional<Product> productOptional= productRepository.findByName(productRequestDTO.getName());
 
         if(productOptional.isPresent()){
-            throw new ProductAlreadyExistsException("Product with name \"" + productDTO.getName() + "\" already exists");
+            throw new ProductAlreadyExistsException("Product with name \"" + productRequestDTO.getName() + "\" already exists");
         }
 
-        Optional<Category> categoryOptional = categoryRepository.findByName(productDTO.getCategoryName());
+        Optional<Category> categoryOptional = categoryRepository.findByName(productRequestDTO.getCategoryName());
 
-        Category category = categoryOptional.orElseGet(()-> categoryRepository.save(new Category(productDTO.getCategoryName())));
+        Category category = categoryOptional.orElseGet(()-> categoryRepository.save(new Category(productRequestDTO.getCategoryName())));
 
-        Product product = productDTO.toProduct();
+        Product product = productRequestDTO.toProduct();
         product.setCategory(category);
         Product savedProduct  = productRepository.save(product);
-        return savedProduct.toDTO();
+        return savedProduct.toResponseDTO();
     }
 }

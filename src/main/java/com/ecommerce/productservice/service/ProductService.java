@@ -1,8 +1,9 @@
 package com.ecommerce.productservice.service;
 
-import com.ecommerce.productservice.dto.ProductDTO;
+import com.ecommerce.productservice.dto.ProductRequestDTO;
+import com.ecommerce.productservice.dto.ProductResponseDTO;
 
 public interface ProductService
 {
-    public ProductDTO createProduct(ProductDTO productDTO);
+    public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO);
 }

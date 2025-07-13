@@ -1,6 +1,6 @@
 package com.ecommerce.productservice.model;
 
-import com.ecommerce.productservice.dto.ProductDTO;
+import com.ecommerce.productservice.dto.ProductResponseDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,9 +24,9 @@ public class Product extends Base
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public ProductDTO toDTO()
+    public ProductResponseDTO toResponseDTO()
     {
-        ProductDTO dto  = new ProductDTO();
+        ProductResponseDTO dto  = new ProductResponseDTO();
         dto.setId(this.getId());
         dto.setName(this.getName());
         dto.setDescription(this.description);
