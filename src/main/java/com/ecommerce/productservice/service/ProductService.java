@@ -6,4 +6,6 @@ import com.ecommerce.productservice.dto.ProductResponseDTO;
 public interface ProductService
 {
     public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO);
+
+    public ProductResponseDTO getProductByID(Long id);
 }

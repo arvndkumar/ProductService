@@ -3,6 +3,7 @@ package com.ecommerce.productservice.service;
 import com.ecommerce.productservice.dto.ProductRequestDTO;
 import com.ecommerce.productservice.dto.ProductResponseDTO;
 import com.ecommerce.productservice.exception.ProductAlreadyExistsException;
+import com.ecommerce.productservice.exception.ProductNotFoundException;
 import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.CategoryRepository;
@@ -41,5 +42,15 @@ public class ProductServiceImpl implements ProductService
         product.setCategory(category);
         Product savedProduct  = productRepository.save(product);
         return savedProduct.toResponseDTO();
+    }
+
+    @Override
+    public ProductResponseDTO getProductByID(Long id)
+    {
+        Product product = productRepository.findById(id)
+                .orElseThrow(()-> new ProductNotFoundException("Product not found with id " + id));
+
+
+        return product.toResponseDTO();
     }
 }

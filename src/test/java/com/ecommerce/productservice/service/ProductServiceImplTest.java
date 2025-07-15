@@ -3,6 +3,7 @@ package com.ecommerce.productservice.service;
 import com.ecommerce.productservice.dto.ProductRequestDTO;
 import com.ecommerce.productservice.dto.ProductResponseDTO;
 import com.ecommerce.productservice.exception.ProductAlreadyExistsException;
+import com.ecommerce.productservice.exception.ProductNotFoundException;
 import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.CategoryRepository;
@@ -89,5 +90,43 @@ class ProductServiceImplTest {
         //Act and Assert
         assertThrows(ProductAlreadyExistsException.class, () -> {productService.createProduct(dto);
         });
+    }
+
+    @Test
+    void testGetProductById_Success() {
+
+        //Arrange
+        Long id = 1L;
+        Category category = new Category();
+        category.setId(10L);
+        category.setName("Phone");
+
+        Product product = new Product();
+        product.setId(id);
+        product.setName("iPhone 16");
+        product.setDescription("iPhone 16");
+        product.setImageUrl("iPhone 16");
+        product.setPrice(999.99);
+        product.setCategory(category);
+        product.setQuantity(100);
+
+        when(productRepository.findById(id)).thenReturn(Optional.of(product));
+
+        //Act
+        ProductResponseDTO dto = productService.getProductByID(id);
+        assertEquals("iPhone 16", dto.getName());
+        assertEquals("Phone", dto.getCategoryName());
+        assertEquals(1L,dto.getId());
+    }
+
+    @Test
+    void testGetProductById_NotFound() {
+        //Arrange
+        Long id = 999L;
+        when(productRepository.findById(id)).thenReturn(Optional.empty());
+
+        //Act and Assert
+        assertThrows(ProductNotFoundException.class, () -> {productService.getProductByID(id);});
+
     }
 }

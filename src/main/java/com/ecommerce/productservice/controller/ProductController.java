@@ -24,4 +24,11 @@ public class ProductController
         return ResponseEntity.ok(productService.createProduct(productRequestDTO));
     }
 
+    @GetMapping("/{id}")
+
+    public ResponseEntity<ProductResponseDTO> searchProductByID(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(productService.getProductByID(id));
+    }
+
 }

@@ -19,6 +19,14 @@ public class GlobalExceptionHandler
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleProductNotFound(ProductNotFoundException ex){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Not Found");
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleProductNotFound(Exception ex){
         Map<String, String> response = new HashMap<>();
