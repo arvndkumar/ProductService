@@ -8,9 +8,12 @@ import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.CategoryRepository;
 import com.ecommerce.productservice.repository.ProductRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService
@@ -53,4 +56,12 @@ public class ProductServiceImpl implements ProductService
 
         return product.toResponseDTO();
     }
+
+    @Override
+    public List<ProductResponseDTO> getAllProducts() {
+
+        List<Product> products = productRepository.findAll();
+        return products.stream().map(Product::toResponseDTO).collect(Collectors.toList());
+    }
+
 }

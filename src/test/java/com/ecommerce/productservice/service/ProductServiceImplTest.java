@@ -13,7 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -127,6 +131,46 @@ class ProductServiceImplTest {
 
         //Act and Assert
         assertThrows(ProductNotFoundException.class, () -> {productService.getProductByID(id);});
+
+    }
+
+    @Test
+    void testGetAllProducts_Paginated(){
+        //Arrange
+        Pageable pageable = PageRequest.of(0, 2);
+        Category category = new Category();
+        category.setId(1L);
+        category.setName("Phone");
+
+        Product product = new Product();
+        product.setId(1L);
+        product.setName("iPhone 16");
+        product.setDescription("iPhone 16");
+        product.setImageUrl("iPhone 16");
+        product.setPrice(999.99);
+        product.setCategory(category);
+        product.setQuantity(100);
+
+        Product product2 = new Product();
+        product2.setId(2L);
+        product2.setName("iPhone 16 - 2");
+        product2.setDescription("iPhone 16 -2");
+        product2.setImageUrl("iPhone 16");
+        product2.setPrice(998.99);
+        product2.setCategory(category);
+        product2.setQuantity(100);
+
+        List<Product> products = List.of(product, product2);
+        Page<Product> productPage = new PageImpl<>(products, pageable, products.size());
+
+        when(productRepository.findAll(pageable)).thenReturn(productPage);
+
+        //Act
+        Page<Product> resultPage  = productRepository.findAll(pageable);
+
+        //Assert
+        assertEquals(2, resultPage.getContent().size());
+        assertEquals("iPhone 16", resultPage.getContent().get(0).getName());
 
     }
 }
