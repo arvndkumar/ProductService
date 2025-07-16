@@ -64,4 +64,29 @@ public class ProductServiceImpl implements ProductService
         return products.stream().map(Product::toResponseDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public ProductResponseDTO updateProduct(Long id, ProductRequestDTO updatedDto){
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id " + id));
+
+        existingProduct.setName(updatedDto.getName());
+        existingProduct.setPrice(updatedDto.getPrice());
+        existingProduct.setDescription(updatedDto.getDescription());
+        existingProduct.setQuantity(updatedDto.getQuantity());
+        existingProduct.setImageUrl(updatedDto.getImage_url());
+
+        Category category = categoryRepository.findByName(updatedDto.getCategoryName())
+                .orElseGet(()-> {
+                    Category newCategory = new Category(updatedDto.getCategoryName());
+                    categoryRepository.save(newCategory);
+                    return newCategory;
+                });
+
+        existingProduct.setCategory(category);
+
+        Product updatedProduct = productRepository.save(existingProduct);
+        return updatedProduct.toResponseDTO();
+
+    }
+
 }

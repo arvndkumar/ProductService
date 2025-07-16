@@ -13,4 +13,6 @@ public interface ProductService
     public ProductResponseDTO getProductByID(Long id);
 
     public List<ProductResponseDTO> getAllProducts();
+
+    public ProductResponseDTO updateProduct(Long id, ProductRequestDTO productRequestDTO);
 }
