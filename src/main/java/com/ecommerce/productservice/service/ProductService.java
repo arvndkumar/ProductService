@@ -5,6 +5,7 @@ import com.ecommerce.productservice.dto.ProductResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductService
 {
@@ -15,4 +16,6 @@ public interface ProductService
     public List<ProductResponseDTO> getAllProducts();
 
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO productRequestDTO);
+
+    ProductResponseDTO patchProduct(Long id, Map<String, Object> updates);
 }

@@ -8,10 +8,10 @@ import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.CategoryRepository;
 import com.ecommerce.productservice.repository.ProductRepository;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -89,4 +89,42 @@ public class ProductServiceImpl implements ProductService
 
     }
 
+    @Override
+    public ProductResponseDTO patchProduct(Long id, Map<String, Object> updates) {
+
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id " + id));
+
+        if(updates.isEmpty()) {throw new IllegalArgumentException("No updates given");}
+
+        for(Map.Entry<String, Object> update: updates.entrySet()) {
+            String key = update.getKey();
+            Object value = update.getValue();
+
+            switch (key) {
+                case "name" ->  existingProduct.setName(value.toString());
+                case "description" -> existingProduct.setDescription(value.toString());
+
+                case "price" -> existingProduct.setPrice(Double.parseDouble(value.toString()));
+
+                case "image_url" -> existingProduct.setImageUrl(value.toString());
+
+                case "quantity" -> existingProduct.setQuantity(Integer.parseInt(value.toString()));
+
+                case "categoryName" -> {
+                        String categoryName = value.toString();
+                        Category category = categoryRepository.findByName(categoryName)
+                                .orElseGet(() -> categoryRepository.save(new Category(categoryName)));
+                        existingProduct.setCategory(category);
+                    }
+
+                    default -> throw new IllegalArgumentException("Invalid key: " + key);
+                }
+
+            }
+
+        Product updatedProduct = productRepository.save(existingProduct);
+        return updatedProduct.toResponseDTO();
+
+    }
 }

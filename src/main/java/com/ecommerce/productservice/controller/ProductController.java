@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collector;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -61,4 +61,10 @@ public class ProductController
         return ResponseEntity.ok(productService.updateProduct(id, productRequestDTO));
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> patchProduct(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> updates) {
+        return ResponseEntity.ok(productService.patchProduct(id, updates));
+    }
 }
