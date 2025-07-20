@@ -26,6 +26,7 @@ public abstract class Base
     @LastModifiedDate
     private LocalDateTime lastModifiedAt;
 
-    private Boolean deleted;
+    @Column(nullable = false)
+    private Boolean deleted = Boolean.FALSE;
 
 }

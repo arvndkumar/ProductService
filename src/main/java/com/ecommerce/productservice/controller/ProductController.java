@@ -48,7 +48,7 @@ public class ProductController
     {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Product> productPage  = productRepository.findAll(pageable);
+        Page<Product> productPage  = productRepository.findAllByDeletedFalse(pageable);
 
         List<ProductResponseDTO> response = productPage.getContent().stream()
                 .map(Product::toResponseDTO)
@@ -66,5 +66,11 @@ public class ProductController
             @PathVariable Long id,
             @RequestBody Map<String, Object> updates) {
         return ResponseEntity.ok(productService.patchProduct(id, updates));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id){
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }

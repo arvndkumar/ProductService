@@ -8,6 +8,8 @@ import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.CategoryRepository;
 import com.ecommerce.productservice.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,7 +33,7 @@ public class ProductServiceImpl implements ProductService
     @Override
     public ProductResponseDTO createProduct(ProductRequestDTO productRequestDTO)
     {
-        Optional<Product> productOptional= productRepository.findByName(productRequestDTO.getName());
+        Optional<Product> productOptional= productRepository.findByNameAndDeletedFalse(productRequestDTO.getName());
 
         if(productOptional.isPresent()){
             throw new ProductAlreadyExistsException("Product with name \"" + productRequestDTO.getName() + "\" already exists");
@@ -50,7 +52,7 @@ public class ProductServiceImpl implements ProductService
     @Override
     public ProductResponseDTO getProductByID(Long id)
     {
-        Product product = productRepository.findById(id)
+        Product product = productRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(()-> new ProductNotFoundException("Product not found with id " + id));
 
 
@@ -58,15 +60,15 @@ public class ProductServiceImpl implements ProductService
     }
 
     @Override
-    public List<ProductResponseDTO> getAllProducts() {
+    public List<ProductResponseDTO> getAllProducts(Pageable pageable) {
 
-        List<Product> products = productRepository.findAll();
+        Page<Product> products = productRepository.findAllByDeletedFalse(pageable);
         return products.stream().map(Product::toResponseDTO).collect(Collectors.toList());
     }
 
     @Override
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO updatedDto){
-        Product existingProduct = productRepository.findById(id)
+        Product existingProduct = productRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id " + id));
 
         existingProduct.setName(updatedDto.getName());
@@ -92,7 +94,7 @@ public class ProductServiceImpl implements ProductService
     @Override
     public ProductResponseDTO patchProduct(Long id, Map<String, Object> updates) {
 
-        Product existingProduct = productRepository.findById(id)
+        Product existingProduct = productRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id " + id));
 
         if(updates.isEmpty()) {throw new IllegalArgumentException("No updates given");}
@@ -126,5 +128,19 @@ public class ProductServiceImpl implements ProductService
         Product updatedProduct = productRepository.save(existingProduct);
         return updatedProduct.toResponseDTO();
 
+    }
+
+    @Override
+    public void deleteProduct(Long id)
+    {
+        Product existingProduct = productRepository.findByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id " + id));
+
+        if(existingProduct.getDeleted()){
+            throw new IllegalStateException("Product has been deleted already");
+        }
+
+        existingProduct.setDeleted(Boolean.TRUE);
+        productRepository.save(existingProduct);
     }
 }

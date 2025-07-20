@@ -45,7 +45,7 @@ class ProductServiceImplTest {
         dto.setCategoryName("Phone");
 
 
-        when(productRepository.findByName("iPhone 16")).thenReturn(Optional.empty());
+        when(productRepository.findByNameAndDeletedFalse("iPhone 16")).thenReturn(Optional.empty());
         when(categoryRepository.findByName("Phone")).thenReturn(Optional.empty());
 
         Category category = new Category();
@@ -89,7 +89,7 @@ class ProductServiceImplTest {
         existingProduct.setId(1L);
         existingProduct.setName("iPhone 16");
 
-        when(productRepository.findByName("iPhone 16")).thenReturn(Optional.of(existingProduct));
+        when(productRepository.findByNameAndDeletedFalse("iPhone 16")).thenReturn(Optional.of(existingProduct));
 
         //Act and Assert
         assertThrows(ProductAlreadyExistsException.class, () -> {productService.createProduct(dto);

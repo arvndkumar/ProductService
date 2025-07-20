@@ -13,9 +13,11 @@ public interface ProductService
 
     public ProductResponseDTO getProductByID(Long id);
 
-    public List<ProductResponseDTO> getAllProducts();
+    public List<ProductResponseDTO> getAllProducts(Pageable pageable);
 
     public ProductResponseDTO updateProduct(Long id, ProductRequestDTO productRequestDTO);
 
     ProductResponseDTO patchProduct(Long id, Map<String, Object> updates);
+
+    void deleteProduct(Long id);
 }
