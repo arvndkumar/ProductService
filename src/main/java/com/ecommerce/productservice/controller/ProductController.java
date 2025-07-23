@@ -1,9 +1,11 @@
 package com.ecommerce.productservice.controller;
 
+import com.ecommerce.productservice.document.ProductDocument;
 import com.ecommerce.productservice.dto.ProductRequestDTO;
 import com.ecommerce.productservice.dto.ProductResponseDTO;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.ProductRepository;
+import com.ecommerce.productservice.search.ProductSearchService;
 import com.ecommerce.productservice.service.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,12 +23,14 @@ public class ProductController
 {
     private final ProductService productService;
     private final ProductRepository productRepository;
+    private final ProductSearchService productSearchService;
 
     //constructor injection
-    public ProductController(ProductService productService, ProductRepository productRepository)
+    public ProductController(ProductService productService, ProductRepository productRepository, ProductSearchService productSearchService)
     {
         this.productService = productService;
         this.productRepository = productRepository;
+        this.productSearchService = productSearchService;
     }
 
     @PostMapping
@@ -72,5 +76,11 @@ public class ProductController
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id){
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDocument>> searchProducts(@RequestParam String query){
+        List<ProductDocument> results = productSearchService.search(query);
+        return ResponseEntity.ok(results);
     }
 }

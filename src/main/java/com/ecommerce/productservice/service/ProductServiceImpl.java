@@ -8,6 +8,7 @@ import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.CategoryRepository;
 import com.ecommerce.productservice.repository.ProductRepository;
+import com.ecommerce.productservice.search.ProductSearchService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,14 @@ public class ProductServiceImpl implements ProductService
 {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductSearchService productSearchService;
 
     public ProductServiceImpl(ProductRepository productRepository,
-                              CategoryRepository categoryRepository)
+                              CategoryRepository categoryRepository, ProductSearchService productSearchService)
     {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.productSearchService = productSearchService;
     }
 
     @Override
@@ -46,6 +49,7 @@ public class ProductServiceImpl implements ProductService
         Product product = productRequestDTO.toProduct();
         product.setCategory(category);
         Product savedProduct  = productRepository.save(product);
+        productSearchService.save(savedProduct.toDocument());
         return savedProduct.toResponseDTO();
     }
 
@@ -87,6 +91,7 @@ public class ProductServiceImpl implements ProductService
         existingProduct.setCategory(category);
 
         Product updatedProduct = productRepository.save(existingProduct);
+        productSearchService.save(updatedProduct.toDocument());
         return updatedProduct.toResponseDTO();
 
     }

@@ -1,5 +1,7 @@
 package com.ecommerce.productservice.model;
 
+import com.ecommerce.productservice.document.ProductDocument;
+import com.ecommerce.productservice.dto.ProductRequestDTO;
 import com.ecommerce.productservice.dto.ProductResponseDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,6 +43,18 @@ public class Product extends Base
         }
 
         return dto;
+    }
+
+    public ProductDocument toDocument(){
+        return ProductDocument.builder()
+                .id(this.getId().toString())
+                .name(this.name)
+                .description(this.description)
+                .price(this.price)
+                .imageUrl(this.imageUrl)
+                .quantity(this.quantity)
+                .categoryName(this.category != null ? this.category.getName():null)
+                .build();
     }
 
 }

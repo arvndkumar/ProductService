@@ -1,5 +1,6 @@
 package com.ecommerce.productservice.repository;
 
+import com.ecommerce.productservice.document.ProductDocument;
 import com.ecommerce.productservice.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +20,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>
     Page<Product> findAllByDeletedFalse(Pageable pageable);
 
     Optional<Product> findByIdAndDeletedFalse(Long id);
+
+    List<ProductDocument> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description);
 }
