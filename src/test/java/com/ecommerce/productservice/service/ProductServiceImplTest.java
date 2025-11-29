@@ -1,5 +1,6 @@
 package com.ecommerce.productservice.service;
-
+import org.springframework.test.context.ActiveProfiles;
+import com.ecommerce.productservice.document.ProductDocument;
 import com.ecommerce.productservice.dto.ProductRequestDTO;
 import com.ecommerce.productservice.dto.ProductResponseDTO;
 import com.ecommerce.productservice.exception.ProductAlreadyExistsException;
@@ -8,6 +9,7 @@ import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.CategoryRepository;
 import com.ecommerce.productservice.repository.ProductRepository;
+import com.ecommerce.productservice.search.ProductSearchService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +24,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +35,9 @@ class ProductServiceImplTest {
 
     @Mock
     private CategoryRepository categoryRepository;
+
+    @Mock
+    private ProductSearchService productSearchService;
 
     @InjectMocks
     private ProductServiceImpl productService;
@@ -65,10 +72,7 @@ class ProductServiceImplTest {
         productToSave.setCategory(category);
 
         when(productRepository.save(any())).thenReturn(productToSave);
-
-
-
-        //Act
+        doNothing().when(productSearchService).save(any(ProductDocument.class));
         ProductResponseDTO response = productService.createProduct(dto);
 
         //Assert
@@ -102,7 +106,7 @@ class ProductServiceImplTest {
         //Arrange
         Long id = 1L;
         Category category = new Category();
-        category.setId(10L);
+        category.setId(1L);
         category.setName("Phone");
 
         Product product = new Product();
@@ -114,7 +118,7 @@ class ProductServiceImplTest {
         product.setCategory(category);
         product.setQuantity(100);
 
-        when(productRepository.findById(id)).thenReturn(Optional.of(product));
+        when(productRepository.findByIdAndDeletedFalse(anyLong())).thenReturn(Optional.of(product));
 
         //Act
         ProductResponseDTO dto = productService.getProductByID(id);
@@ -127,7 +131,7 @@ class ProductServiceImplTest {
     void testGetProductById_NotFound() {
         //Arrange
         Long id = 999L;
-        when(productRepository.findById(id)).thenReturn(Optional.empty());
+        //when(productRepository.findById(id)).thenReturn(Optional.empty());
 
         //Act and Assert
         assertThrows(ProductNotFoundException.class, () -> {productService.getProductByID(id);});
