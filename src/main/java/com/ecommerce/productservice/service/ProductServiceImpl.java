@@ -9,10 +9,13 @@ import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.CategoryRepository;
 import com.ecommerce.productservice.repository.ProductRepository;
 import com.ecommerce.productservice.search.ProductSearchService;
+import com.ecommerce.productservice.util.RedisKeys;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,13 +27,18 @@ public class ProductServiceImpl implements ProductService
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductSearchService productSearchService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public ProductServiceImpl(ProductRepository productRepository,
-                              CategoryRepository categoryRepository, ProductSearchService productSearchService)
+                              CategoryRepository categoryRepository,
+                              ProductSearchService productSearchService,
+                              RedisTemplate<String, Object> redisTemplate
+                              )
     {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.productSearchService = productSearchService;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -56,11 +64,23 @@ public class ProductServiceImpl implements ProductService
     @Override
     public ProductResponseDTO getProductByID(Long id)
     {
+        String key = RedisKeys.productById(id);
+
+        ProductResponseDTO cachedProduct = (ProductResponseDTO) redisTemplate.opsForValue().get(key);
+
+        if(cachedProduct != null){
+            return cachedProduct;
+        }
+
         Product product = productRepository.findByIdAndDeletedFalse(id)
                 .orElseThrow(()-> new ProductNotFoundException("Product not found with id " + id));
 
+        ProductResponseDTO response = product.toResponseDTO();
 
-        return product.toResponseDTO();
+        redisTemplate.opsForValue().set(key, response, Duration.ofMinutes(10));
+
+
+        return response;
     }
 
     @Override
@@ -92,6 +112,9 @@ public class ProductServiceImpl implements ProductService
 
         Product updatedProduct = productRepository.save(existingProduct);
         productSearchService.save(updatedProduct.toDocument());
+
+        redisTemplate.delete(RedisKeys.productById(id));
+
         return updatedProduct.toResponseDTO();
 
     }
@@ -131,6 +154,9 @@ public class ProductServiceImpl implements ProductService
             }
 
         Product updatedProduct = productRepository.save(existingProduct);
+
+        redisTemplate.delete(RedisKeys.productById(id));
+
         return updatedProduct.toResponseDTO();
 
     }
@@ -147,5 +173,6 @@ public class ProductServiceImpl implements ProductService
 
         existingProduct.setDeleted(Boolean.TRUE);
         productRepository.save(existingProduct);
+        redisTemplate.delete(RedisKeys.productById(id));
     }
 }
