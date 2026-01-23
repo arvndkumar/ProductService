@@ -15,7 +15,7 @@ public class ApplicationCommonsImpl implements ApplicationCommons {
 
     private final RestTemplate restTemplate;
 
-    @Value("${userservice.base-url:http://localhost:9000}")
+    @Value("${userservice.base-url:http://UserService}")
     private String userServiceBaseUrl;
 
 

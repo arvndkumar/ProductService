@@ -8,6 +8,7 @@ import com.ecommerce.productservice.repository.ProductRepository;
 import com.ecommerce.productservice.search.ProductSearchService;
 import com.ecommerce.productservice.service.*;
 import com.ecommerce.productservice.util.ApplicationCommons;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
+@RequiredArgsConstructor
 public class ProductController
 {
     private final ProductService productService;
@@ -27,17 +29,6 @@ public class ProductController
     private final ProductSearchService productSearchService;
     private final ApplicationCommons applicationCommons;
 
-    //constructor injection
-    public ProductController(ProductService productService,
-                             ProductRepository productRepository,
-                             ProductSearchService productSearchService,
-                             ApplicationCommons applicationCommons)
-    {
-        this.productService = productService;
-        this.productRepository = productRepository;
-        this.productSearchService = productSearchService;
-        this.applicationCommons = applicationCommons;
-    }
 
     @PostMapping
     public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductRequestDTO productRequestDTO)
