@@ -1,6 +1,5 @@
 package com.ecommerce.productservice.controller;
 
-import com.ecommerce.productservice.dto.ProductRequestDTO;
 import com.ecommerce.productservice.dto.ProductResponseDTO;
 import com.ecommerce.productservice.service.search.ProductSearchService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ public class SearchController {
             @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "relevance") String sort)
+            @RequestParam(defaultValue = "name.keyword") String sort)
     {
 
         List<ProductResponseDTO> response = productSearchService.search(query, page, size, sort);

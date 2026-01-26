@@ -20,6 +20,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
 
     private final ProductSearchRepository productSearchRepository;
 
+
     @Override
     public List<ProductResponseDTO> search(String query, int page, int size, String sortParam) {
 

@@ -1,6 +1,5 @@
 package com.ecommerce.productservice.repository;
 
-import com.ecommerce.productservice.document.ProductDocument;
 import com.ecommerce.productservice.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,6 +18,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>
     Page<Product> findAllByDeletedFalse(Pageable pageable);
 
     Optional<Product> findByIdAndDeletedFalse(Long id);
+
+    Page<Product> findByCategory_IdAndDeletedFalse(Long categoryId, Pageable pageable);
 
     //List<ProductDocument> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String description);
 }

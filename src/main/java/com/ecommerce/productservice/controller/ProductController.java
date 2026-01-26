@@ -2,12 +2,13 @@ package com.ecommerce.productservice.controller;
 
 import com.ecommerce.productservice.dto.ProductRequestDTO;
 import com.ecommerce.productservice.dto.ProductResponseDTO;
-import com.ecommerce.productservice.repository.ProductRepository;
 import com.ecommerce.productservice.service.*;
 import com.ecommerce.productservice.util.ApplicationCommons;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Map;
 
 
@@ -20,7 +21,7 @@ public class ProductController
     private final ApplicationCommons applicationCommons;
 
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductRequestDTO productRequestDTO)
     {
         return ResponseEntity.ok(productService.createProduct(productRequestDTO));
@@ -61,6 +62,31 @@ public class ProductController
         applicationCommons.validateToken(bearer);
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/browse")
+    public ResponseEntity<List<ProductResponseDTO>> getProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name.keyword") String sort
+    )
+    {
+        List<ProductResponseDTO> response = productService.findAllProducts(page, size, sort);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/browse/{categoryId}")
+    public ResponseEntity<List<ProductResponseDTO>> getProducts(
+            @PathVariable Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name.keyword") String sort
+    )
+    {
+        List<ProductResponseDTO> response = productService.findAllProductsByCategory(categoryId, page, size, sort);
+
+        return ResponseEntity.ok(response);
     }
 
 }

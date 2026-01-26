@@ -11,7 +11,9 @@ import com.ecommerce.productservice.repository.ProductRepository;
 import com.ecommerce.productservice.service.search.ProductSearchService;
 import com.ecommerce.productservice.util.RedisKeys;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -173,6 +175,34 @@ public class ProductServiceImpl implements ProductService
 
         existingProduct.setDeleted(Boolean.TRUE);
         productRepository.save(existingProduct);
+        productSearchService.deleteById(existingProduct.getId().toString());
         redisTemplate.delete(RedisKeys.productById(id));
+    }
+
+    @Override
+    public List<ProductResponseDTO> findAllProducts(int page, int size, String sortParam)
+    {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortParam).descending());
+        Page<Product> productsPage = productRepository.findAllByDeletedFalse(pageable);
+
+        return productsPage.getContent()
+                .stream()
+                .map(Product::toResponseDTO)
+                .toList();
+
+    }
+
+    @Override
+    public List<ProductResponseDTO> findAllProductsByCategory(Long categoryId, int page, int size, String sortParam) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortParam).descending());
+
+        Page<Product> productsPage =
+                productRepository.findByCategory_IdAndDeletedFalse(categoryId, pageable);
+
+        return productsPage.getContent()
+                .stream()
+                .map(Product::toResponseDTO)
+                .toList();
     }
 }

@@ -20,4 +20,8 @@ public interface ProductService
     ProductResponseDTO patchProduct(Long id, Map<String, Object> updates);
 
     void deleteProduct(Long id);
+
+    List<ProductResponseDTO> findAllProducts(int page, int size, String sortParam);
+
+    List<ProductResponseDTO> findAllProductsByCategory(Long categoryId, int page, int size, String sortParam);
 }
