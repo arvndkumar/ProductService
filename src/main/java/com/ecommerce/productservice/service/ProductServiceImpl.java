@@ -8,7 +8,7 @@ import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.CategoryRepository;
 import com.ecommerce.productservice.repository.ProductRepository;
-import com.ecommerce.productservice.search.ProductSearchService;
+import com.ecommerce.productservice.service.search.ProductSearchService;
 import com.ecommerce.productservice.util.RedisKeys;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

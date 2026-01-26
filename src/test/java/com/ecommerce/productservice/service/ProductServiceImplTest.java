@@ -1,5 +1,4 @@
 package com.ecommerce.productservice.service;
-import org.springframework.test.context.ActiveProfiles;
 import com.ecommerce.productservice.document.ProductDocument;
 import com.ecommerce.productservice.dto.ProductRequestDTO;
 import com.ecommerce.productservice.dto.ProductResponseDTO;
@@ -9,7 +8,7 @@ import com.ecommerce.productservice.model.Category;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.CategoryRepository;
 import com.ecommerce.productservice.repository.ProductRepository;
-import com.ecommerce.productservice.search.ProductSearchService;
+import com.ecommerce.productservice.service.search.ProductSearchService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
