@@ -65,7 +65,7 @@ public class ProductController
     }
 
     @GetMapping("/browse")
-    public ResponseEntity<List<ProductResponseDTO>> getProducts(
+    public ResponseEntity<List<ProductResponseDTO>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name.keyword") String sort
@@ -77,7 +77,7 @@ public class ProductController
     }
 
     @GetMapping("/browse/{categoryId}")
-    public ResponseEntity<List<ProductResponseDTO>> getProducts(
+    public ResponseEntity<List<ProductResponseDTO>> getProductsByCategory(
             @PathVariable Long categoryId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
